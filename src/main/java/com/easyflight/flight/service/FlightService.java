@@ -35,17 +35,11 @@ public class FlightService {
         Date end = plusOneDay(requestDate);
         QFlight qFlight = new QFlight("flight");
 
-        Predicate from
-                = qFlight.
-                    from.eq(request.getFrom());
-        Predicate to
-                = qFlight.
-                to.eq(request.getTo());
-        Predicate predicate
-                = qFlight
+        Predicate from = qFlight.from.eq(request.getFrom());
+        Predicate to = qFlight.to.eq(request.getTo());
+        Predicate predicate = qFlight
                 .date.between(requestDate,end)
                 .and(from).and(to);
-
         PageRequest pageRequest
                 = new PageRequest(
                         request.getPageNumber(),
