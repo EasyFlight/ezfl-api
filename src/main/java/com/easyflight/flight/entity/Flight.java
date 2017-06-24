@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by johnson on 6/22/17.
@@ -24,7 +25,7 @@ public class Flight {
     private String from;
     private String to;
     private String airline;
-    private ArrayList<Price> prices;
+    private Map prices;
     private Date expiresAt;
     private String flightNumber;
 
@@ -32,7 +33,7 @@ public class Flight {
     }
 
     @PersistenceConstructor
-    public Flight(String id, Date date, Date departureTime, Date arrivalTime, String from, String to, String airline, ArrayList<Price> prices, Date expiresAt, String flightNumber) {
+    public Flight(String id, Date date, Date departureTime, Date arrivalTime, String from, String to, String airline, Map prices, Date expiresAt, String flightNumber) {
         this.id = id;
         this.date = date;
         this.departureTime = departureTime;
@@ -101,11 +102,11 @@ public class Flight {
         this.airline = airline;
     }
 
-    public List<Price> getPrices() {
+    public Map getPrices() {
         return prices;
     }
 
-    public void setPrices(ArrayList<Price> prices) {
+    public void setPrices(Map prices) {
         this.prices = prices;
     }
 
