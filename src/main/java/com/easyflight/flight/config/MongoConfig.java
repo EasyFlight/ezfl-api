@@ -17,7 +17,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
 
     @Value( "${mongo.client.uri}" )
     private String mongoClientUri;
-    @Value( "${mongo.easyfly.database}" )
+    @Value( "${mongo.client.database}" )
     private String database;
 
     @Override
