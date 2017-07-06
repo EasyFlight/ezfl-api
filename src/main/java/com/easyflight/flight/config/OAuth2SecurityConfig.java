@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceS
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
@@ -12,11 +14,13 @@ import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.filter.CompositeFilter;
 
 import javax.servlet.Filter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,14 +28,17 @@ import java.util.List;
  */
 
 @EnableOAuth2Client
-public class OAuth2SecurityConfig  extends WebSecurityConfigurerAdapter {
+@Configuration
+public class OAuth2SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     final OAuth2ClientContext oauth2ClientContext;
+    private final Environment environment;
 
     @Autowired
-    public OAuth2SecurityConfig(OAuth2ClientContext oauth2ClientContext) {
+    public OAuth2SecurityConfig(OAuth2ClientContext oauth2ClientContext, Environment environment) {
         this.oauth2ClientContext = oauth2ClientContext;
+        this.environment = environment;
     }
 
     @Override
@@ -39,14 +46,10 @@ public class OAuth2SecurityConfig  extends WebSecurityConfigurerAdapter {
         http
                 .antMatcher("/**")
                 .authorizeRequests()
-                .antMatchers("/", "/login**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and().csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and().logout().logoutSuccessUrl("/")
-                .permitAll();
+                .antMatchers("/", "/login**").permitAll().anyRequest().authenticated()
+                .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and().addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
+                .logout().logoutSuccessUrl("/");
     }
 
 
@@ -61,13 +64,13 @@ public class OAuth2SecurityConfig  extends WebSecurityConfigurerAdapter {
     }
 
     private Filter  googleSSOFilter(){
-        OAuth2ClientAuthenticationProcessingFilter githubFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/google");
+        OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/google");
         OAuth2RestTemplate githubTemplate = new OAuth2RestTemplate(google(), oauth2ClientContext);
-        githubFilter.setRestTemplate(githubTemplate);
+        googleFilter.setRestTemplate(githubTemplate);
         UserInfoTokenServices tokenServices = new UserInfoTokenServices(googleResource().getUserInfoUri(), google().getClientId());
         tokenServices.setRestTemplate(githubTemplate);
-        githubFilter.setTokenServices(tokenServices);
-        return githubFilter;
+        googleFilter.setTokenServices(tokenServices);
+        return googleFilter;
     }
 
     private Filter ssoFilter(){
@@ -95,7 +98,11 @@ public class OAuth2SecurityConfig  extends WebSecurityConfigurerAdapter {
     @Bean
     @ConfigurationProperties("google.client")
     public AuthorizationCodeResourceDetails google() {
-        return new AuthorizationCodeResourceDetails();
+        AuthorizationCodeResourceDetails authorizationCodeResourceDetails = new AuthorizationCodeResourceDetails();
+        List<String> scopes = new ArrayList<>();
+        Collections.addAll(scopes, environment.getProperty("google.auth.scopes").split(","));
+        authorizationCodeResourceDetails.setScope(scopes);
+        return authorizationCodeResourceDetails;
     }
 
     @Bean

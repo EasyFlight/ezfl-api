@@ -22,10 +22,14 @@ facebook:
 
 google:
   client:
-    clientId: bd1c0a783ccdd1c9b9e4
-    clientSecret: 1a9030fbca47a5b2c28e92f19050bb77824b5ad1
-    accessTokenUri: https://github.com/login/oauth/access_token
-    userAuthorizationUri: https://github.com/login/oauth/authorize
+    clientId: 607834257535-vffvv1sq9uaei1qq3p868j9ae38f5eiv.apps.googleusercontent.com
+    clientSecret: oHfPhaDqkrG1r_HLDiq8NK5f
+    accessTokenUri: https://accounts.google.com/o/oauth2/token
+    userAuthorizationUri: https://accounts.google.com/o/oauth2/auth
+    tokenName: authorization_code
     clientAuthenticationScheme: form
+    authenticationScheme: query
   resource:
     userInfoUri: https://api.github.com/user
+  auth:
+    scopes: https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/userinfo.profile
