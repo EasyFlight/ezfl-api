@@ -1,6 +1,9 @@
 package com.easyflight.flight.api;
 
 import com.easyflight.flight.entity.Flight;
+import com.easyflight.flight.entity.query.ResultPage;
+import com.easyflight.flight.entity.query.Route;
+import com.easyflight.flight.entity.query.TimeSpan;
 import com.easyflight.flight.request.FlightRequest;
 import com.easyflight.flight.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +30,38 @@ public class FlightController {
         this.flightService = flightService;
     }
 
-    @RequestMapping(value = "/flight",
+    @RequestMapping(value = "/oneway",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Page<Flight> getFlights(@RequestParam String from,
+    Page<Flight> getOneWayFlights(
+                            @RequestParam String airline,
+                            @RequestParam String from,
                             @RequestParam String to,
                             @RequestParam String date,
+                            @RequestParam String startTime,
+                            @RequestParam String endTime,
                             @RequestParam Integer pageNumber,
                             @RequestParam Integer pageSize) throws ParseException {
-        FlightRequest request = new FlightRequest();
-        request.setFrom(from);
-        request.setTo(to);
-        request.setDate(date);
-        request.setPageNumber(pageNumber);
-        request.setPageSize(pageSize);
-        return flightService.getFlights(request);
+        Route route = new Route(airline,from,to);
+        TimeSpan timeSpan = new TimeSpan(date,startTime,endTime);
+        ResultPage page = new ResultPage(pageNumber,pageSize);
+        FlightRequest request = new FlightRequest(route,timeSpan,page);
+        return flightService.getOneWayFlights(request);
+    }
+
+    @RequestMapping(value = "/return",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    Page<Flight> getReturnFlights(
+            @RequestParam String airline,
+            @RequestParam String from,
+            @RequestParam String to,
+            @RequestParam String depatureDate,
+            @RequestParam String returnDate,
+            @RequestParam String startTime,
+            @RequestParam String endTime,
+            @RequestParam Integer pageNumber,
+            @RequestParam Integer pageSize) throws ParseException {
+        return null;
     }
 }

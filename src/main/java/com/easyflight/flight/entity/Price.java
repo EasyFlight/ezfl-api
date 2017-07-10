@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 /**
  * Created by johnson on 6/22/17.
  */
+
 public class Price {
     @Field("class")
     private String flightClass;

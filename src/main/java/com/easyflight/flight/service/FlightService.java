@@ -2,9 +2,12 @@ package com.easyflight.flight.service;
 
 import com.easyflight.flight.entity.Flight;
 import com.easyflight.flight.entity.QFlight;
+import com.easyflight.flight.entity.RoutePredicate;
+import com.easyflight.flight.entity.query.TimeSpan;
 import com.easyflight.flight.repository.FlightsRepository;
 import com.easyflight.flight.request.FlightRequest;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,29 +26,109 @@ import java.util.Date;
 public class FlightService {
 
     private FlightsRepository flightsRepository;
-    private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private DateFormat dateFormat
+            = new SimpleDateFormat("dd/MM/yyyy");
+    private DateFormat timeFormat
+            = new SimpleDateFormat("HH:mm");
 
     @Autowired
     public FlightService(FlightsRepository flightsRepository) {
         this.flightsRepository = flightsRepository;
     }
 
-    public Page<Flight> getFlights(FlightRequest request) throws ParseException {
-        Date requestDate = dateFormat.parse(request.getDate());
-        Date end = plusOneDay(requestDate);
-        QFlight qFlight = new QFlight("flight");
+    public Page<Flight> getOneWayFlights(FlightRequest request)
+      throws ParseException {
+        QFlight qFlight =createNewFlightQuery();
 
-        Predicate from = qFlight.from.eq(request.getFrom());
-        Predicate to = qFlight.to.eq(request.getTo());
-        Predicate predicate = qFlight
-                .date.between(requestDate,end)
-                .and(from).and(to);
-        PageRequest pageRequest
-                = new PageRequest(
-                        request.getPageNumber(),
-                        request.getPageSize());
+        Predicate flightSearchPredicate
+                = getOneWayFlightSearchPredicate(qFlight,request);
+        PageRequest pageRequest = getPageRequest(request);
 
-        return flightsRepository.findAll(predicate, pageRequest);
+        return flightsRepository.findAll(flightSearchPredicate, pageRequest);
+    }
+
+    private QFlight createNewFlightQuery(){
+        return new QFlight("flight");
+    }
+
+    private PageRequest getPageRequest(FlightRequest request){
+        return new PageRequest(
+                request.getPageNumber(),
+                request.getPageSize());
+    }
+
+    private Predicate getOneWayFlightSearchPredicate(
+      QFlight qFlight, FlightRequest request)
+        throws ParseException {
+
+        RoutePredicate routePredicate
+                = getRouteSearchPredicate(request,qFlight);
+
+        BooleanExpression dateSearchExpression
+                = getDateSearchExpression(request,qFlight);
+
+        return getFlightSearchPredicate(
+                routePredicate,dateSearchExpression);
+    }
+
+    private Predicate
+    getFlightSearchPredicate(
+              RoutePredicate routePredicate,
+              BooleanExpression dateSearchExpression){
+
+        BooleanExpression searchExpression
+                = dateSearchExpression
+                .and(routePredicate.getFromPredicate())
+                .and(routePredicate.getToPredicate());
+
+        if(routePredicate.getAirlinePredicate() != null){
+            searchExpression
+                    = searchExpression.and(
+                            routePredicate.getAirlinePredicate());
+        }
+
+        return searchExpression;
+    }
+
+    private RoutePredicate getRouteSearchPredicate(FlightRequest request, QFlight qFlight){
+        Predicate airlinePredicate
+                = request.getAirline() != null
+                        && !request.getAirline().isEmpty()
+                            ? qFlight.airline.eq(request.getAirline()) : null;
+        Predicate fromPredicate = qFlight.from.eq(request.getFrom());
+        Predicate toPredicate = qFlight.to.eq(request.getTo());
+        return new RoutePredicate(airlinePredicate,
+                                  fromPredicate,
+                                  toPredicate);
+    }
+
+    private BooleanExpression getDateSearchExpression(FlightRequest request, QFlight qFlight) throws ParseException {
+        Date flightDate = getFormattedFlightDate(request);
+        TimeSpan searchTime = request.getTime();
+        flightDate = setTimeTo(searchTime.getStartTime(), flightDate);
+        Date searchTimeLimit
+                = setTimeTo(searchTime.getEndTime(), plusOneDay(flightDate));
+        return qFlight
+                .date.between(flightDate,searchTimeLimit);
+    }
+
+    private Date setTimeTo(String time, Date date) throws ParseException {
+        Calendar targetDate = Calendar.getInstance();
+        targetDate.setTime(date);
+
+        Calendar targetTime = Calendar.getInstance();
+        targetTime.setTime(timeFormat.parse(time));
+
+        targetDate.set(Calendar.HOUR_OF_DAY,
+                targetTime.get(Calendar.HOUR_OF_DAY));
+        targetDate.set(Calendar.MINUTE,
+                targetTime.get(Calendar.MINUTE));
+
+        return targetDate.getTime();
+    }
+
+    private Date getFormattedFlightDate(FlightRequest request) throws ParseException {
+        return dateFormat.parse(request.getDate());
     }
 
     private Date plusOneDay(Date date){
