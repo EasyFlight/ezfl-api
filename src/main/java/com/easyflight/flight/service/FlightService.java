@@ -105,11 +105,17 @@ public class FlightService {
     private BooleanExpression getDateSearchExpression(FlightRequest request, QFlight qFlight) throws ParseException {
         Date flightDate = getFormattedFlightDate(request);
         TimeSpan searchTime = request.getTime();
+
         flightDate = setTimeTo(searchTime.getStartTime(), flightDate);
         Date searchTimeLimit
-                = setTimeTo(searchTime.getEndTime(), plusOneDay(flightDate));
-        return qFlight
-                .date.between(flightDate,searchTimeLimit);
+                = setTimeTo(searchTime.getEndTime(), flightDate);
+
+        BooleanExpression flightsAfterStartTime
+                = qFlight.arrivalTime.eq(flightDate).or(qFlight.arrivalTime.after(flightDate));
+        BooleanExpression flightsBeforeEndTime
+                = qFlight.arrivalTime.eq(searchTimeLimit).or(qFlight.arrivalTime.before(searchTimeLimit));
+
+        return flightsAfterStartTime.and(flightsBeforeEndTime);
     }
 
     private Date setTimeTo(String time, Date date) throws ParseException {
@@ -129,12 +135,5 @@ public class FlightService {
 
     private Date getFormattedFlightDate(FlightRequest request) throws ParseException {
         return dateFormat.parse(request.getDate());
-    }
-
-    private Date plusOneDay(Date date){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DAY_OF_MONTH,1);
-        return calendar.getTime();
     }
 }

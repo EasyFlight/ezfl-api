@@ -34,17 +34,17 @@ public class FlightController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     Page<Flight> getOneWayFlights(
-                            @RequestParam String airline,
+                            @RequestParam(required=false,defaultValue = "") String airline,
                             @RequestParam String from,
                             @RequestParam String to,
                             @RequestParam String date,
-                            @RequestParam String startTime,
-                            @RequestParam String endTime,
-                            @RequestParam Integer pageNumber,
-                            @RequestParam Integer pageSize) throws ParseException {
+                            @RequestParam(required=false,defaultValue = "00:00") String startTime,
+                            @RequestParam(required=false,defaultValue = "23:59") String endTime,
+                            @RequestParam(required=false, defaultValue = "1") Integer pageNumber,
+                            @RequestParam(required=false, defaultValue = "20") Integer pageSize) throws ParseException {
         Route route = new Route(airline,from,to);
         TimeSpan timeSpan = new TimeSpan(date,startTime,endTime);
-        ResultPage page = new ResultPage(pageNumber,pageSize);
+        ResultPage page = new ResultPage(pageNumber - 1,pageSize);
         FlightRequest request = new FlightRequest(route,timeSpan,page);
         return flightService.getOneWayFlights(request);
     }

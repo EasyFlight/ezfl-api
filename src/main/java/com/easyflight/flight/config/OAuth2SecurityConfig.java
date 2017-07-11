@@ -31,7 +31,6 @@ import java.util.List;
 @Configuration
 public class OAuth2SecurityConfig extends WebSecurityConfigurerAdapter {
 
-
     final OAuth2ClientContext oauth2ClientContext;
     private final Environment environment;
 
@@ -45,11 +44,11 @@ public class OAuth2SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .antMatcher("/**")
-                .authorizeRequests()
+                /*.authorizeRequests()
                 .antMatchers("/", "/login**").permitAll().anyRequest().authenticated()
                 .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and().addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
-                .logout().logoutSuccessUrl("/");
+                .logout().logoutSuccessUrl("/")*/;
     }
 
 
