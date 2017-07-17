@@ -25,6 +25,7 @@ public class Flight {
     private String to;
     private String airline;
     private Map prices;
+    private Map routes;
     private Date expiresAt;
     private String flightNumber;
 
@@ -32,7 +33,7 @@ public class Flight {
     }
 
     @PersistenceConstructor
-    public Flight(String id, Date date, Date departureTime, Date arrivalTime, String from, String to, String airline, Map prices, Date expiresAt, String flightNumber) {
+    public Flight(String id, Date date, Date departureTime, Date arrivalTime, String from, String to, String airline, Map prices, Map routes, Date expiresAt, String flightNumber) {
         this.id = id;
         this.date = date;
         this.departureTime = departureTime;
@@ -41,6 +42,7 @@ public class Flight {
         this.to = to;
         this.airline = airline;
         this.prices = prices;
+        this.routes = routes;
         this.expiresAt = expiresAt;
         this.flightNumber = flightNumber;
     }
@@ -123,5 +125,13 @@ public class Flight {
 
     public void setFlightNumber(String flightNumber) {
         this.flightNumber = flightNumber;
+    }
+
+    public Map getRoutes() {
+        return routes;
+    }
+
+    public void setRoutes(Map routes) {
+        this.routes = routes;
     }
 }
