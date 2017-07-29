@@ -53,8 +53,7 @@ public class GoogleAccessTokenValidator  implements AccessTokenValidator, Initia
 
     private Map<String, ?> getGoogleResponse(String accessToken) {
         HttpEntity<Object> requestEntity = new HttpEntity<>(new HttpHeaders());
-        Map<String, String> variables = ImmutableMap.of("accessToken", accessToken);
-        Map map = restTemplate.exchange(checkTokenUrl, HttpMethod.GET, requestEntity, Map.class, variables).getBody();
+        Map map = restTemplate.getForEntity(checkTokenUrl + "?access_token=" + accessToken, Map.class).getBody();
         return (Map<String, Object>) map;
     }
 

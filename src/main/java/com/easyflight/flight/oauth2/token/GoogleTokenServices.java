@@ -60,7 +60,7 @@ public class GoogleTokenServices  implements ResourceServerTokenServices, Initia
 
     private Authentication getAuthenticationToken(String accessToken) {
         Map<String, ?> userInfo = getUserInfo(accessToken);
-        String idStr = (String) userInfo.get("id");
+        String idStr = (String) userInfo.get("sub");
         if (idStr == null) {
             throw new InternalAuthenticationServiceException("Cannot get id from user info");
         }

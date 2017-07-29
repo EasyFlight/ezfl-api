@@ -64,7 +64,7 @@ public class UserInfoPrincipal {
     public  static  UserInfoPrincipal fromGoogle(Map<String, ?> userInfo){
         Assert.notNull(userInfo, "User info map cannot be null");
         return new UserInfoPrincipal(
-                userInfo.get("id"),
+                userInfo.get("sub"),
                 userInfo.get("name"),
                 userInfo.get("given_name"),
                 userInfo.get("family_name"),
