@@ -48,20 +48,4 @@ public class FlightController {
         FlightRequest request = new FlightRequest(route,timeSpan,page);
         return flightService.getOneWayFlights(request);
     }
-
-    @RequestMapping(value = "/return",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    Page<Flight> getReturnFlights(
-            @RequestParam String airline,
-            @RequestParam String from,
-            @RequestParam String to,
-            @RequestParam String depatureDate,
-            @RequestParam String returnDate,
-            @RequestParam String startTime,
-            @RequestParam String endTime,
-            @RequestParam Integer pageNumber,
-            @RequestParam Integer pageSize) throws ParseException {
-        return null;
-    }
 }
