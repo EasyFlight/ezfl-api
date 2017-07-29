@@ -37,69 +37,68 @@ public class FlightService {
     }
 
     public Page<Flight> getOneWayFlights(FlightRequest request)
-      throws ParseException {
-        QFlight qFlight =createNewFlightQuery();
+            throws ParseException {
+        QFlight qFlight = createNewFlightQuery();
 
         Predicate flightSearchPredicate
-                = getOneWayFlightSearchPredicate(qFlight,request);
+                = getOneWayFlightSearchPredicate(qFlight, request);
         PageRequest pageRequest = getPageRequest(request);
 
         return flightsRepository.findAll(flightSearchPredicate, pageRequest);
     }
 
-    private QFlight createNewFlightQuery(){
+    private QFlight createNewFlightQuery() {
         return new QFlight("flight");
     }
 
-    private PageRequest getPageRequest(FlightRequest request){
+    private PageRequest getPageRequest(FlightRequest request) {
         return new PageRequest(
                 request.getPageNumber(),
                 request.getPageSize());
     }
 
     private Predicate getOneWayFlightSearchPredicate(
-      QFlight qFlight, FlightRequest request)
-        throws ParseException {
+            QFlight qFlight, FlightRequest request)
+            throws ParseException {
 
         RoutePredicate routePredicate
-                = getRouteSearchPredicate(request,qFlight);
+                = getRouteSearchPredicate(request, qFlight);
 
         BooleanExpression dateSearchExpression
-                = getDateSearchExpression(request,qFlight);
+                = getDateSearchExpression(request, qFlight);
 
         return getFlightSearchPredicate(
-                routePredicate,dateSearchExpression);
+                routePredicate, dateSearchExpression);
     }
 
-    private Predicate
-    getFlightSearchPredicate(
-              RoutePredicate routePredicate,
-              BooleanExpression dateSearchExpression){
+    private Predicate getFlightSearchPredicate(
+            RoutePredicate routePredicate,
+            BooleanExpression dateSearchExpression) {
 
         BooleanExpression searchExpression
                 = dateSearchExpression
                 .and(routePredicate.getFromPredicate())
                 .and(routePredicate.getToPredicate());
 
-        if(routePredicate.getAirlinePredicate() != null){
+        if (routePredicate.getAirlinePredicate() != null) {
             searchExpression
                     = searchExpression.and(
-                            routePredicate.getAirlinePredicate());
+                    routePredicate.getAirlinePredicate());
         }
 
         return searchExpression;
     }
 
-    private RoutePredicate getRouteSearchPredicate(FlightRequest request, QFlight qFlight){
+    private RoutePredicate getRouteSearchPredicate(FlightRequest request, QFlight qFlight) {
         Predicate airlinePredicate
                 = request.getAirline() != null
-                        && !request.getAirline().isEmpty()
-                            ? qFlight.airline.eq(request.getAirline()) : null;
+                && !request.getAirline().isEmpty()
+                ? qFlight.airline.eq(request.getAirline()) : null;
         Predicate fromPredicate = qFlight.from.eq(request.getFrom());
         Predicate toPredicate = qFlight.to.eq(request.getTo());
         return new RoutePredicate(airlinePredicate,
-                                  fromPredicate,
-                                  toPredicate);
+                fromPredicate,
+                toPredicate);
     }
 
     private BooleanExpression getDateSearchExpression(FlightRequest request, QFlight qFlight) throws ParseException {
