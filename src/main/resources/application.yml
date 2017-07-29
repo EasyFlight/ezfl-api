@@ -3,3 +3,10 @@ mongo:
   client:
     url: mongodb://easyflight:password@ds127982.mlab.com:27982/easyflight_test
     database: easyflight_test
+
+google:
+  client:
+    id: 607834257535-vffvv1sq9uaei1qq3p868j9ae38f5eiv.apps.googleusercontent.com
+  resources:
+    userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+    tokenInfoUri: https://www.googleapis.com/oauth2/v3/tokeninfo
