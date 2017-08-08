@@ -4,15 +4,14 @@ import com.easyflight.flight.entity.Flight;
 import com.easyflight.flight.entity.query.ResultPage;
 import com.easyflight.flight.entity.query.Route;
 import com.easyflight.flight.entity.query.TimeSpan;
+import com.easyflight.flight.enums.ErrorCodes;
+import com.easyflight.flight.exception.NotFoundException;
 import com.easyflight.flight.request.FlightRequest;
 import com.easyflight.flight.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -33,7 +32,7 @@ public class FlightController {
     @RequestMapping(value = "/oneway",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Page<Flight> getOneWayFlights(
+    public Page<Flight> getOneWayFlights(
                             @RequestParam(required=false,defaultValue = "") String airline,
                             @RequestParam String from,
                             @RequestParam String to,
@@ -47,5 +46,16 @@ public class FlightController {
         ResultPage page = new ResultPage(pageNumber - 1,pageSize);
         FlightRequest request = new FlightRequest(route,timeSpan,page);
         return flightService.getOneWayFlights(request);
+    }
+
+    @RequestMapping(value = "/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Flight getFlight(@PathVariable String id) {
+        Flight flight = flightService.getFlightById(id);
+        if (flight == null) {
+            throw new NotFoundException(ErrorCodes.FLIGHT_NOT_FOUND.name(), "Flight not found");
+        }
+        return flight;
     }
 }

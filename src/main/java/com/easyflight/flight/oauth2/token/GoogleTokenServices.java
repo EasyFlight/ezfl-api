@@ -22,7 +22,6 @@ import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConv
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigInteger;
 import java.util.Map;
 
 import static java.util.Collections.singleton;
@@ -48,8 +47,7 @@ public class GoogleTokenServices  implements ResourceServerTokenServices, Initia
             throw new UnapprovedClientAuthenticationException("The token is not intended to be used for this application.");
         }
         Map<String, ?> tokenInfo = validationResult.getTokenInfo();
-        OAuth2Authentication authentication = getAuthentication(tokenInfo, accessToken);
-        return authentication;
+        return getAuthentication(tokenInfo, accessToken);
     }
 
     private OAuth2Authentication getAuthentication(Map<String, ?> tokenInfo, String accessToken) {
