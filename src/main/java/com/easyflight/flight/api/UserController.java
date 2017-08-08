@@ -49,7 +49,6 @@ public class UserController {
 
     @RequestMapping(value = "",
             method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity createUser(OAuth2Authentication authentication) {
         UserInfoPrincipal principal = (UserInfoPrincipal) authentication.getPrincipal();

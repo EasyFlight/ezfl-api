@@ -1,5 +1,6 @@
 package com.easyflight.flight.oauth2;
 
+import com.easyflight.flight.enums.InfoProvider;
 import org.springframework.util.Assert;
 
 import java.util.Map;
@@ -27,6 +28,17 @@ public class UserInfoPrincipal {
         this.infoProvider = infoProvider;
     }
 
+    public static UserInfoPrincipal fromGoogle(Map<String, ?> userInfo) {
+        Assert.notNull(userInfo, "User info map cannot be null");
+        return new UserInfoPrincipal(
+                userInfo.get("sub"),
+                userInfo.get("name"),
+                userInfo.get("given_name"),
+                userInfo.get("family_name"),
+                userInfo.get("email"),
+                Boolean.valueOf(userInfo.get("email_verified").toString()), InfoProvider.GOOGLE.name());
+    }
+
     public String getId() {
         return id;
     }
@@ -51,25 +63,12 @@ public class UserInfoPrincipal {
         return email;
     }
 
-
     public boolean getEmailVerified() {
         return emailVerified;
     }
 
     public String getInfoProvider() {
         return infoProvider;
-    }
-
-
-    public  static  UserInfoPrincipal fromGoogle(Map<String, ?> userInfo){
-        Assert.notNull(userInfo, "User info map cannot be null");
-        return new UserInfoPrincipal(
-                userInfo.get("sub"),
-                userInfo.get("name"),
-                userInfo.get("given_name"),
-                userInfo.get("family_name"),
-                userInfo.get("email"),
-                Boolean.valueOf(userInfo.get("email_verified").toString()), "google");
     }
 
 }

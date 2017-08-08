@@ -1,10 +1,13 @@
 package com.easyflight.flight.service;
 
 import com.easyflight.flight.entity.User;
+import com.easyflight.flight.enums.ErrorCodes;
+import com.easyflight.flight.exception.DuplicateException;
 import com.easyflight.flight.repository.UserRepository;
 import com.easyflight.flight.request.UserRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,7 +34,13 @@ public class UserService {
     public User createUser(UserRequest userRequest) {
         User user = new User();
         BeanUtils.copyProperties(userRequest, user);
-        return userRepository.save(user);
+
+        try {
+            return userRepository.save(user);
+        } catch (DuplicateKeyException ex) {
+            throw new DuplicateException(ErrorCodes.USER_ALREADY_EXISTS.name(), "User already exists", ex);
+        }
+
     }
 
 

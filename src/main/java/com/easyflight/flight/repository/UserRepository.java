@@ -13,5 +13,5 @@ import java.util.List;
 @Repository
 public interface UserRepository extends MongoRepository<User, String>, QueryDslPredicateExecutor<User> {
 
-    List findByEmailOrId(String id, String email);
+    List<User> findByEmailOrId(String id, String email);
 }

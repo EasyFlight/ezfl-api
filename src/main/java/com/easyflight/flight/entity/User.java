@@ -3,6 +3,7 @@ package com.easyflight.flight.entity;
 import com.querydsl.core.annotations.QueryEntity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -16,9 +17,10 @@ public class User {
 
     @Id
     private String id;
-    private String name;
+    private String fullName;
     private String firstName;
     private String lastName;
+    @Indexed(unique = true)
     private String email;
     private String address;
     private String mobile;
@@ -28,9 +30,9 @@ public class User {
     }
 
     @PersistenceConstructor
-    public User(String id, String name, String firstName, String lastName, String email, String address, String mobile, Date createdAt) {
+    public User(String id, String fullName, String firstName, String lastName, String email, String address, String mobile, Date createdAt) {
         this.id = id;
-        this.name = name;
+        this.fullName = fullName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -47,12 +49,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getFirstName() {

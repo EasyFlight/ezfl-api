@@ -1,5 +1,7 @@
 package com.easyflight.flight.api;
 
+import com.easyflight.flight.enums.ErrorCodes;
+import com.easyflight.flight.exception.DuplicateException;
 import com.easyflight.flight.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,24 @@ public class ApiAdvice {
     public Response handleNotFoundException(NotFoundException e) {
         logger.error(e.getMessage());
         Response response = new Response(e.getCode(), e.getMessage());
+        return response;
+    }
+
+    @ExceptionHandler(DuplicateException.class)
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    @ResponseBody
+    public Response handleDuplicateException(DuplicateException e) {
+        logger.error(e.getMessage());
+        Response response = new Response(e.getCode(), e.getMessage());
+        return response;
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    @ResponseBody
+    public Response handleException(Exception e) {
+        logger.error(e.getMessage());
+        Response response = new Response(ErrorCodes.INTERNAL_SERVER_ERROR.name(), e.getMessage());
         return response;
     }
 
