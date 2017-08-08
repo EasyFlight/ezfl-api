@@ -1,5 +1,4 @@
-server:
-  port: 8000
+
 mongo:
   client:
     url: mongodb://easyflight:password@ds127982.mlab.com:27982/easyflight_test
