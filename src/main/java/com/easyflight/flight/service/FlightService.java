@@ -47,6 +47,10 @@ public class FlightService {
         return flightsRepository.findAll(flightSearchPredicate, pageRequest);
     }
 
+    public Flight getFlightById(String id) {
+        return flightsRepository.findOne(id);
+    }
+
     private QFlight createNewFlightQuery() {
         return new QFlight("flight");
     }
