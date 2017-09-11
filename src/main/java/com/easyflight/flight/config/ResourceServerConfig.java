@@ -29,7 +29,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/flights/**").permitAll().anyRequest().hasRole("USER");
+        http.authorizeRequests().antMatchers("/api/v1/flights/**").permitAll().anyRequest().hasRole("USER");
     }
 
     @Override
