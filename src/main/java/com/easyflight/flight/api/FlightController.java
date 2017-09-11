@@ -19,7 +19,7 @@ import java.text.ParseException;
  * Created by johnson on 6/22/17.
  */
 @RestController
-@RequestMapping(value = "/flights")
+@RequestMapping(value = "/api/v1/flights")
 public class FlightController {
 
     private FlightService flightService;
