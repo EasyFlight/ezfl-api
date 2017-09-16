@@ -1,4 +1,4 @@
-smongo:
+mongo:
   client:
     url: mongodb://easyflight:password@ds127982.mlab.com:27982/easyflight_test
     database: easyflight_test
