@@ -35,6 +35,10 @@ public class UserFlight {
     private Flight flight;
 
 
+
+    private boolean expired;
+
+
     public String getId() {
         return id;
     }
@@ -105,5 +109,12 @@ public class UserFlight {
 
     public void setFlight(Flight flight) {
         this.flight = flight;
+    }
+    public boolean isExpired() {
+        return expired;
+    }
+
+    public void setExpired(boolean expired) {
+        this.expired = expired;
     }
 }

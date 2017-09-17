@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,7 +39,14 @@ public class UserFlightService {
     public Page<UserFlight> getPaginatedUserFlights(String userId, Integer pageNumber, Integer pageSize) {
         User user = getUser(userId);
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
-        return userFlightRepository.findAll(QUserFlight.userFlight.userId.eq(user.getId()), pageRequest);
+        Page<UserFlight> userFlights =  userFlightRepository.findAll(QUserFlight.userFlight.userId.eq(user.getId()), pageRequest);
+        userFlights.getContent().forEach(userFlight -> {
+            Flight flight = userFlight.getFlight();
+            if( flight != null){
+                userFlight.setExpired(flight.getDepartureTime().before(new Date()));
+            }
+        });
+        return userFlights;
     }
 
     public void deleteUserFlight(String userId, String userFlightId) {
