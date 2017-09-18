@@ -5,7 +5,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,7 @@ public class Flight {
     private String from;
     private String to;
     private String airline;
-    private Map prices;
+    private List prices;
     private Map routes;
     private Date expiresAt;
     private String flightNumber;
@@ -33,7 +32,7 @@ public class Flight {
     }
 
     @PersistenceConstructor
-    public Flight(String id, Date date, Date departureTime, Date arrivalTime, String from, String to, String airline, Map prices, Map routes, Date expiresAt, String flightNumber) {
+    public Flight(String id, Date date, Date departureTime, Date arrivalTime, String from, String to, String airline, List prices, Map routes, Date expiresAt, String flightNumber) {
         this.id = id;
         this.date = date;
         this.departureTime = departureTime;
@@ -103,11 +102,11 @@ public class Flight {
         this.airline = airline;
     }
 
-    public Map getPrices() {
+    public List getPrices() {
         return prices;
     }
 
-    public void setPrices(Map prices) {
+    public void setPrices(List prices) {
         this.prices = prices;
     }
 
