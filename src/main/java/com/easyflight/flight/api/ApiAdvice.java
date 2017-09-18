@@ -40,7 +40,7 @@ public class ApiAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(value = HttpStatus.CONFLICT)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public Response handleException(Exception e) {
         logger.error(e.getMessage());
