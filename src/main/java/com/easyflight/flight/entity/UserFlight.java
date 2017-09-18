@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by Victor.Ikoro on 8/8/2017.
@@ -30,6 +31,12 @@ public class UserFlight {
     private String flightNumber;
 
     private Date createdAt;
+
+    private Flight flight;
+
+
+
+    private boolean expired;
 
 
     public String getId() {
@@ -94,5 +101,20 @@ public class UserFlight {
 
     public void setFlightNumber(String flightNumber) {
         this.flightNumber = flightNumber;
+    }
+
+    public Flight getFlight() {
+        return flight;
+    }
+
+    public void setFlight(Flight flight) {
+        this.flight = flight;
+    }
+    public boolean isExpired() {
+        return expired;
+    }
+
+    public void setExpired(boolean expired) {
+        this.expired = expired;
     }
 }

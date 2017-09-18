@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by Victor.Ikoro on 8/8/2017.
  */
 @RestController
-@RequestMapping(value = "/user/flights")
+@RequestMapping(value = "/api/v1/user/flights")
 public class UserFlightController {
 
     private UserFlightService userFlightService;

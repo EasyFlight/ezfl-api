@@ -8,12 +8,14 @@ import com.easyflight.flight.enums.ErrorCodes;
 import com.easyflight.flight.exception.DuplicateException;
 import com.easyflight.flight.exception.NotFoundException;
 import com.easyflight.flight.repository.UserFlightRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,7 +39,14 @@ public class UserFlightService {
     public Page<UserFlight> getPaginatedUserFlights(String userId, Integer pageNumber, Integer pageSize) {
         User user = getUser(userId);
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
-        return userFlightRepository.findAll(QUserFlight.userFlight.userId.eq(user.getId()), pageRequest);
+        Page<UserFlight> userFlights =  userFlightRepository.findAll(QUserFlight.userFlight.userId.eq(user.getId()), pageRequest);
+        userFlights.getContent().forEach(userFlight -> {
+            Flight flight = userFlight.getFlight();
+            if( flight != null){
+                userFlight.setExpired(flight.getDepartureTime().before(new Date()));
+            }
+        });
+        return userFlights;
     }
 
     public void deleteUserFlight(String userId, String userFlightId) {
@@ -61,6 +70,7 @@ public class UserFlightService {
         userFlight.setTo(flight.getTo());
         userFlight.setFlightNumber(flight.getFlightNumber());
         userFlight.setUserId(user.getId());
+        userFlight.setFlight(flight);
 
         try {
             return userFlightRepository.save(userFlight);

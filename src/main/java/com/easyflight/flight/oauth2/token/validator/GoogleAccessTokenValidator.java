@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class GoogleAccessTokenValidator  implements AccessTokenValidator, InitializingBean {
 
-    private String clientId;
+    private String[] clientIds;
     private String checkTokenUrl;
 
     private RestTemplate restTemplate = new RestTemplate();
@@ -45,10 +45,12 @@ public class GoogleAccessTokenValidator  implements AccessTokenValidator, Initia
 
     private boolean validateResponse(Map<String, ?> response) throws AuthenticationException {
         String aud = (String) response.get("aud");
-        if (!StringUtils.equals(aud, clientId)) {
-            return false;
+        for (String clientId: clientIds) {
+            if (StringUtils.equals(aud, clientId.trim())) {
+                return true;
+            }
         }
-        return true;
+        return false;
     }
 
     private Map<String, ?> getGoogleResponse(String accessToken) {
@@ -57,8 +59,8 @@ public class GoogleAccessTokenValidator  implements AccessTokenValidator, Initia
         return (Map<String, Object>) map;
     }
 
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
+    public void setClientIds(String[] clientIds) {
+        this.clientIds = clientIds;
     }
 
     public void setCheckTokenUrl(String checkTokenUrl) {

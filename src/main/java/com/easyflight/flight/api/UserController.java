@@ -23,7 +23,7 @@ import java.util.Collections;
  * Created by Victor Ikoro on 7/29/2017.
  */
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/api/v1/user")
 public class UserController {
 
     private UserService userService;

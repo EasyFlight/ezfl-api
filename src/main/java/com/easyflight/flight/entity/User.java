@@ -22,6 +22,7 @@ public class User {
     private String lastName;
     @Indexed(unique = true)
     private String email;
+    private String picture;
     private String address;
     private String mobile;
     private Date createdAt;
@@ -30,12 +31,13 @@ public class User {
     }
 
     @PersistenceConstructor
-    public User(String id, String fullName, String firstName, String lastName, String email, String address, String mobile, Date createdAt) {
+    public User(String id, String fullName, String firstName, String lastName, String email, String picture, String address, String mobile, Date createdAt) {
         this.id = id;
         this.fullName = fullName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.picture = picture;
         this.address = address;
         this.mobile = mobile;
         this.createdAt = createdAt;
@@ -79,6 +81,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     public String getAddress() {
