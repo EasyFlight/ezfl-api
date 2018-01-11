@@ -4,7 +4,6 @@ import com.easyflight.flight.entity.Flight;
 import com.easyflight.flight.entity.QFlight;
 import com.easyflight.flight.entity.RoutePredicate;
 import com.easyflight.flight.entity.query.TimeSpan;
-import com.easyflight.flight.model.PopularDestination;
 import com.easyflight.flight.repository.FlightsRepository;
 import com.easyflight.flight.request.FlightRequest;
 import com.querydsl.core.types.Predicate;
@@ -19,7 +18,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by johnson on 6/22/17.

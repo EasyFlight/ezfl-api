@@ -1,23 +1,20 @@
 package com.easyflight.flight.api;
 
 import com.easyflight.flight.entity.Flight;
+import com.easyflight.flight.entity.PopularDestination;
 import com.easyflight.flight.entity.query.ResultPage;
 import com.easyflight.flight.entity.query.Route;
 import com.easyflight.flight.entity.query.TimeSpan;
 import com.easyflight.flight.enums.ErrorCodes;
 import com.easyflight.flight.exception.NotFoundException;
-import com.easyflight.flight.model.PopularDestination;
 import com.easyflight.flight.request.FlightRequest;
 import com.easyflight.flight.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

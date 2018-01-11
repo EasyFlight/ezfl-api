@@ -6,6 +6,8 @@ mongo:
     database: easyflight_test
 
 flights:
+  job:
+    scheduleInterval: 5000
   destinations:
     popular: lagos_abuja,owerri_lagos,lagos_calabar,abuja_kano,portharcourt_calabar,owerri_abuja,owerri_enugu,calabar_benin
 
