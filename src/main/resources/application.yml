@@ -7,7 +7,7 @@ mongo:
 
 flights:
   job:
-    scheduleInterval: 5000
+    scheduleInterval: 7200000
   destinations:
     popular: lagos_abuja,owerri_lagos,lagos_calabar,abuja_kano,portharcourt_calabar,owerri_abuja,owerri_enugu,calabar_benin
 
