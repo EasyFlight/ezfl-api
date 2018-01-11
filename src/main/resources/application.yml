@@ -5,6 +5,10 @@ mongo:
     url: mongodb://easyflight:password@ds127982.mlab.com:27982/easyflight_test
     database: easyflight_test
 
+flights:
+  destinations:
+    popular: lagos_abuja,owerri_lagos,lagos_calabar,abuja_kano,portharcourt_calabar,owerri_abuja,owerri_enugu,calabar_benin
+
 token:
   clients:
     whitelist: 607834257535-vffvv1sq9uaei1qq3p868j9ae38f5eiv.apps.googleusercontent.com,985378081278-bvbv17ajje4gs84kpqplq9dtqbsvm2pd.apps.googleusercontent.com,985378081278-r9v3utpfijo75cklmhcdu7vblg4oe80g.apps.googleusercontent.com,985378081278-tigv2np50duqodmr3vpqmck6hl20goh3.apps.googleusercontent.com
