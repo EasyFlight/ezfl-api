@@ -17,7 +17,6 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by Victor Ikoro on 1/9/2018.
@@ -33,7 +32,8 @@ public class PopularDestinationService {
 
     @Autowired
     public PopularDestinationService(FlightService flightService,
-                                     PopularDestinationRepository popularDestinationRepository, @Value("${flights.destination.popular:}") String popularDestinations) {
+                                     PopularDestinationRepository popularDestinationRepository,
+                                     @Value("${flights.destinations.popular:}") String popularDestinations) {
         this.flightService = flightService;
         this.popularDestinationRepository = popularDestinationRepository;
         this.popularDestinations = popularDestinations;
@@ -57,7 +57,6 @@ public class PopularDestinationService {
                     }
                 })
                 .filter(popularDestination -> popularDestination != null)
-                .collect(Collectors.toList())
                 .forEach(popularDestination -> {
                     //Replace old ones in DB
                     List<PopularDestination> old = popularDestinationRepository.findByFromAndTo(popularDestination.getFrom(), popularDestination.getTo());

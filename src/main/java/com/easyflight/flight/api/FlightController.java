@@ -9,6 +9,7 @@ import com.easyflight.flight.enums.ErrorCodes;
 import com.easyflight.flight.exception.NotFoundException;
 import com.easyflight.flight.request.FlightRequest;
 import com.easyflight.flight.service.FlightService;
+import com.easyflight.flight.service.PopularDestinationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
@@ -25,10 +26,11 @@ import java.util.List;
 public class FlightController {
 
     private FlightService flightService;
+    private PopularDestinationService popularDestinationService;
     @Autowired
-    public FlightController(FlightService flightService,
-                           ) {
+    public FlightController(FlightService flightService, PopularDestinationService popularDestinationService) {
         this.flightService = flightService;
+        this.popularDestinationService = popularDestinationService;
     }
 
     @RequestMapping(value = "/oneway",
@@ -63,6 +65,6 @@ public class FlightController {
 
     @RequestMapping(value = {"/popular"} )
     public List<PopularDestination> getPopularDestinations(){
-
+        return popularDestinationService.getPopularDestinations();
     }
 }
