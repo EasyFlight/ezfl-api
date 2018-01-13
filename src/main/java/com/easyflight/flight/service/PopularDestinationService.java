@@ -56,7 +56,7 @@ public class PopularDestinationService {
                         return null;
                     }
                 })
-                .filter(popularDestination -> popularDestination != null)
+                .filter(popularDestination -> popularDestination != null && popularDestination.getLeastPrice() > 0)
                 .forEach(popularDestination -> {
                     //Replace old ones in DB
                     List<PopularDestination> old = popularDestinationRepository.findByFromAndTo(popularDestination.getFrom(), popularDestination.getTo());
