@@ -75,7 +75,7 @@ public class PopularDestinationService {
         //Get all flights for the next 7 days
         for(int i = 0; i < 8; i++){
             TimeSpan timeSpan = new TimeSpan(
-                    LocalDate.now().plusDays(i).format(DateTimeFormatter.BASIC_ISO_DATE),
+                    LocalDate.now().plusDays(i).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                     "00:00",
                     "23:59");
             flightRequest.setTime(timeSpan);
@@ -85,15 +85,16 @@ public class PopularDestinationService {
                 .parallelStream()
                 .mapToDouble((a) -> {
                     Comparator comparator = (p1, p2) -> {
-                        Price price1 = (Price) p1, price2 = (Price) p2;
+                        Price price1 = Price.fromMap((Map) p1), price2 = Price.fromMap((Map) p2);
                         return (price1).getCost().compareTo(price2.getCost());
                     };
                     Collections.sort(a.getPrices(), comparator);
                     Optional lowestPriceA = a.getPrices()
                             .stream()
+                            .map(p -> Price.fromMap((Map) p))
                             .filter(price -> ((Price) price).getCost() > 0)
                             .findFirst();
-                    return lowestPriceA.isPresent() ? (double) lowestPriceA.get() : 0;
+                    return lowestPriceA.isPresent() ? ((Price) lowestPriceA.get()).getCost() : 0;
                 })
                 .filter((value -> value > 0))
                 .sorted()

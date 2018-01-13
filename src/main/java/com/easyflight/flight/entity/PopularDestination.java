@@ -1,6 +1,7 @@
 package com.easyflight.flight.entity;
 
 import com.querydsl.core.annotations.QueryEntity;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,6 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @QueryEntity
 @Document(collection = "popularDestinations")
 public class PopularDestination {
+
+    @Id
+    private String id;
     private String from;
     private String to;
     private double leastPrice;
@@ -20,12 +24,21 @@ public class PopularDestination {
     }
 
     @PersistenceConstructor
-    public PopularDestination(String from, String to, double leastPrice) {
+    public PopularDestination(String id, String from, String to, double leastPrice) {
+        this.id = id;
         this.from = from;
         this.to = to;
         this.leastPrice = leastPrice;
     }
 
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getFrom() {
         return from;
