@@ -68,8 +68,8 @@ public class OAuth2SecurityConfig {
         googleTokenServices.setUserInfoUrl(googleUserInfoUri);
 
         FacebookAccessTokenValidator facebookAccessTokenValidator = new FacebookAccessTokenValidator(facebookClientId, facebookSecret);
-        facebookAccessTokenValidator.setClientIds(googleTokenClientsWhitelist.split(","));
-        facebookAccessTokenValidator.setCheckTokenUrl(googleTokenInfoUri);
+        facebookAccessTokenValidator.setClientIds(facebookTokenClientsWhitelist.split(","));
+        facebookAccessTokenValidator.setCheckTokenUrl(facebookTokenInfoUri);
         FacebookTokenServices facebookTokenServices = new FacebookTokenServices(facebookAccessTokenValidator);
         facebookTokenServices.setUserInfoUrl(facebookUserInfoUri);
 
