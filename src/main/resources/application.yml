@@ -13,11 +13,20 @@ flights:
 
 token:
   clients:
-    whitelist: 607834257535-vffvv1sq9uaei1qq3p868j9ae38f5eiv.apps.googleusercontent.com,985378081278-bvbv17ajje4gs84kpqplq9dtqbsvm2pd.apps.googleusercontent.com,985378081278-r9v3utpfijo75cklmhcdu7vblg4oe80g.apps.googleusercontent.com,985378081278-tigv2np50duqodmr3vpqmck6hl20goh3.apps.googleusercontent.com
-
+    whitelist:
+     facebook: 1443110989106910
+     google: 607834257535-vffvv1sq9uaei1qq3p868j9ae38f5eiv.apps.googleusercontent.com,985378081278-bvbv17ajje4gs84kpqplq9dtqbsvm2pd.apps.googleusercontent.com,985378081278-r9v3utpfijo75cklmhcdu7vblg4oe80g.apps.googleusercontent.com,985378081278-tigv2np50duqodmr3vpqmck6hl20goh3.apps.googleusercontent.com
 google:
   client:
     id: 607834257535-vffvv1sq9uaei1qq3p868j9ae38f5eiv.apps.googleusercontent.com
   resources:
     userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
     tokenInfoUri: https://www.googleapis.com/oauth2/v3/tokeninfo
+
+facebook:
+  client:
+    id: 1443110989106910
+    secret: I1AYbe79K8EqiVxH_VRmekk57hM
+  resources:
+    userInfoUri: https://graph.facebook.com/me
+    tokenInfoUri: https://graph.facebook.com/debug_token

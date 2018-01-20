@@ -1,4 +1,4 @@
-package com.easyflight.flight.oauth2.token.validator;
+package com.easyflight.flight.oauth2.token.validator.result;
 
 import java.util.Map;
 
@@ -10,7 +10,7 @@ public class AccessTokenValidationResult {
     private boolean valid;
     private final Map<String, ?> tokenInfo;
 
-    AccessTokenValidationResult(boolean valid, Map<String, ?> tokenInfo){
+    public AccessTokenValidationResult(boolean valid, Map<String, ?> tokenInfo){
 
         this.valid = valid;
         this.tokenInfo = tokenInfo;

@@ -1,8 +1,9 @@
 package com.easyflight.flight.oauth2.token;
 
 import com.easyflight.flight.oauth2.UserInfoPrincipal;
-import com.easyflight.flight.oauth2.token.validator.result.AccessTokenValidationResult;
 import com.easyflight.flight.oauth2.token.validator.AccessTokenValidator;
+import com.easyflight.flight.oauth2.token.validator.FacebookAccessTokenValidator;
+import com.easyflight.flight.oauth2.token.validator.result.AccessTokenValidationResult;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,28 +22,36 @@ import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Map;
 
 import static java.util.Collections.singleton;
 
 /**
- * Created by Victor Ikoro on 7/29/2017.
+ * Created by Victor Ikoro on 1/20/2018.
  */
-public class GoogleTokenServices  implements ResourceServerTokenServices, InitializingBean {
-    private String userInfoUrl;
+public class FacebookTokenServices  implements ResourceServerTokenServices, InitializingBean {
 
+    private AccessTokenValidator  accessTokenValidator;
     private RestTemplate restTemplate = new RestTemplate();
     private AccessTokenConverter tokenConverter = new DefaultAccessTokenConverter();
-    private AccessTokenValidator tokenValidator;
 
-    public GoogleTokenServices(AccessTokenValidator tokenValidator) {
-        this.tokenValidator = tokenValidator;
+    private String userInfoUrl;
+
+    public FacebookTokenServices(FacebookAccessTokenValidator accessTokenValidator) {
+        this.accessTokenValidator =  accessTokenValidator;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+
     }
 
     @Override
     public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException, InvalidTokenException {
-        AccessTokenValidationResult validationResult = tokenValidator.validate(accessToken);
+        AccessTokenValidationResult validationResult = accessTokenValidator.validate(accessToken);
         if (!validationResult.isValid()) {
             throw new UnapprovedClientAuthenticationException("The token is not intended to be used for this application.");
         }
@@ -58,24 +67,18 @@ public class GoogleTokenServices  implements ResourceServerTokenServices, Initia
 
     private Authentication getAuthenticationToken(String accessToken) {
         Map<String, ?> userInfo = getUserInfo(accessToken);
-        String idStr = (String) userInfo.get("sub");
+        String idStr = (String) userInfo.get("id");
         if (idStr == null) {
             throw new InternalAuthenticationServiceException("Cannot get id from user info");
         }
-        return new UsernamePasswordAuthenticationToken(UserInfoPrincipal.fromGoogle(userInfo), null, singleton(new SimpleGrantedAuthority("ROLE_USER")));
+        return new UsernamePasswordAuthenticationToken(UserInfoPrincipal.fromFacebook(userInfo), null, singleton(new SimpleGrantedAuthority("ROLE_USER")));
     }
 
     private Map<String, ?> getUserInfo(String accessToken) {
-        HttpHeaders headers = getHttpHeaders(accessToken);
-        Map map = restTemplate.exchange(userInfoUrl, HttpMethod.GET, new HttpEntity<>(headers), Map.class).getBody();
+        Map map = restTemplate.getForEntity(userInfoUrl + "?access_token=" + accessToken, Map.class).getBody();
         return (Map<String, Object>) map;
     }
 
-    private HttpHeaders getHttpHeaders(String accessToken) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken);
-        return headers;
-    }
 
     @Override
     public OAuth2AccessToken readAccessToken(String accessToken) {
@@ -84,10 +87,5 @@ public class GoogleTokenServices  implements ResourceServerTokenServices, Initia
 
     public void setUserInfoUrl(String userInfoUrl) {
         this.userInfoUrl = userInfoUrl;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-
     }
 }

@@ -43,6 +43,17 @@ public class UserInfoPrincipal {
                 userInfo.get("profile"),
                 userInfo.get("picture"),Boolean.valueOf(userInfo.get("email_verified").toString()), InfoProvider.GOOGLE.name());
     }
+    public static  UserInfoPrincipal fromFacebook(Map<String, ?> userInfo){
+        Assert.notNull(userInfo, "User info map cannot be null");
+        return new UserInfoPrincipal(
+                userInfo.get("id"),
+                userInfo.get("name"),
+                userInfo.get("given_name"),
+                userInfo.get("family_name"),
+                userInfo.get("email"),
+                userInfo.get("profile"),
+                userInfo.get("picture"),false, InfoProvider.FACEBOOK.name());
+    }
 
     public String getId() {
         return id;
