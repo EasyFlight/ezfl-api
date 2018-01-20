@@ -3,9 +3,7 @@ package com.easyflight.flight.config;
 import com.easyflight.flight.oauth2.manager.WhitelistOAuth2AuthenticationManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -24,18 +22,18 @@ import org.springframework.security.oauth2.provider.token.ResourceServerTokenSer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 
-    private String googleClientId;
-
     private final String tokenClientsWhitelist;
+    private String googleClientId;
     private ResourceServerTokenServices tokenServices;
 
     @Autowired
     public ResourceServerConfig(
             @Value("${google.client.id}") String googleClientId,
-            @Value("${token.clients.whitelist}") String tokenClientsWhitelist,
+            @Value("${token.clients.whitelist.google}") String googleTokenClientsWhitelist,
+            @Value("${token.clients.whitelist.facebook}") String facebookTokenClientsWhitelist,
             ResourceServerTokenServices tokenServices) {
         this.googleClientId = googleClientId;
-        this.tokenClientsWhitelist = tokenClientsWhitelist;
+        this.tokenClientsWhitelist = String.join(",", googleTokenClientsWhitelist, facebookTokenClientsWhitelist);
         this.tokenServices = tokenServices;
     }
 
