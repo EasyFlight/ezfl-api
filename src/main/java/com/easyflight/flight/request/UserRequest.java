@@ -18,6 +18,7 @@ public class UserRequest {
     private String email;
     private String mobile;
     private String address;
+    private String picture;
 
     public String getFirstName() {
         return firstName;
@@ -65,5 +66,14 @@ public class UserRequest {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 }

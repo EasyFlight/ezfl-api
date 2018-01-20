@@ -5,9 +5,6 @@ import com.easyflight.flight.oauth2.token.validator.AccessTokenValidator;
 import com.easyflight.flight.oauth2.token.validator.FacebookAccessTokenValidator;
 import com.easyflight.flight.oauth2.token.validator.result.AccessTokenValidationResult;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,9 +19,7 @@ import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.Map;
 
 import static java.util.Collections.singleton;
@@ -75,7 +70,7 @@ public class FacebookTokenServices  implements ResourceServerTokenServices, Init
     }
 
     private Map<String, ?> getUserInfo(String accessToken) {
-        Map map = restTemplate.getForEntity(userInfoUrl + "?access_token=" + accessToken, Map.class).getBody();
+        Map map = restTemplate.getForEntity(userInfoUrl + "?fields=id,name,email,first_name,last_name,picture&access_token=" + accessToken, Map.class).getBody();
         return (Map<String, Object>) map;
     }
 

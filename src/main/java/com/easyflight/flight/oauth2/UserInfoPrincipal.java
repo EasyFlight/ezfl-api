@@ -20,7 +20,7 @@ public class UserInfoPrincipal {
     private boolean emailVerified;
     private String infoProvider;
 
-    private  UserInfoPrincipal(Object id, Object name, Object firstName, Object lastName, Object email, Object profile, Object picture, boolean emailVerified, String infoProvider){
+    private UserInfoPrincipal(Object id, Object name, Object firstName, Object lastName, Object email, Object picture, Object profile, boolean emailVerified, String infoProvider) {
         this.id = (String) id;
         this.name = (String) name;
         this.firstName = (String) firstName;
@@ -40,19 +40,27 @@ public class UserInfoPrincipal {
                 userInfo.get("given_name"),
                 userInfo.get("family_name"),
                 userInfo.get("email"),
+                userInfo.get("picture"),
                 userInfo.get("profile"),
-                userInfo.get("picture"),Boolean.valueOf(userInfo.get("email_verified").toString()), InfoProvider.GOOGLE.name());
+                Boolean.valueOf(userInfo.get("email_verified").toString()), InfoProvider.GOOGLE.name());
     }
     public static  UserInfoPrincipal fromFacebook(Map<String, ?> userInfo){
         Assert.notNull(userInfo, "User info map cannot be null");
+        Map pictureMap = (Map) userInfo.get("picture");
+        String pictureUrl = null;
+        if (pictureMap != null) {
+            Map pictureData = (Map) pictureMap.get("data");
+            pictureUrl = (String) pictureData.get("url");
+        }
         return new UserInfoPrincipal(
                 userInfo.get("id"),
                 userInfo.get("name"),
-                userInfo.get("given_name"),
-                userInfo.get("family_name"),
+                userInfo.get("first_name"),
+                userInfo.get("last_name"),
                 userInfo.get("email"),
+                pictureUrl,
                 userInfo.get("profile"),
-                userInfo.get("picture"),false, InfoProvider.FACEBOOK.name());
+                false, InfoProvider.FACEBOOK.name());
     }
 
     public String getId() {
