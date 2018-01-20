@@ -1,5 +1,10 @@
 package com.easyflight.flight.oauth2.manager;
 
+import com.easyflight.flight.entity.User;
+import com.easyflight.flight.oauth2.UserInfoPrincipal;
+import com.easyflight.flight.request.UserRequest;
+import com.easyflight.flight.service.UserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedException;
@@ -9,8 +14,8 @@ import org.springframework.security.oauth2.provider.authentication.OAuth2Authent
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
@@ -24,6 +29,7 @@ public class WhitelistOAuth2AuthenticationManager extends OAuth2AuthenticationMa
     private ClientDetailsService clientDetailsService;
 
     private String[] validResourceIds;
+    private UserService userService;
 
     public void setResourceIds(String[] resourceIds) {
         this.validResourceIds = resourceIds;
@@ -91,8 +97,25 @@ public class WhitelistOAuth2AuthenticationManager extends OAuth2AuthenticationMa
         }
         auth.setDetails(authentication.getDetails());
         auth.setAuthenticated(true);
+
+        //Save Principal as user object if contains email && user doesn't exist
+        UserInfoPrincipal principal = (UserInfoPrincipal) auth.getPrincipal();
+        if (StringUtils.hasText(principal.getEmail())) {
+            User user = userService.getUser(principal.getEmail());
+            if (user == null) {
+                UserRequest request = new UserRequest();
+                BeanUtils.copyProperties(principal, request);
+                request.setFullName(principal.getName());
+                userService.createUser(request);
+            }
+        }
         return auth;
 
+    }
+
+    public void setUserService(UserService userService) {
+
+        this.userService = userService;
     }
 
     private void checkClientDetails(OAuth2Authentication auth) {

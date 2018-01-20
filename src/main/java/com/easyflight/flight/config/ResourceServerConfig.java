@@ -1,6 +1,7 @@
 package com.easyflight.flight.config;
 
 import com.easyflight.flight.oauth2.manager.WhitelistOAuth2AuthenticationManager;
+import com.easyflight.flight.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -25,14 +26,17 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     private final String tokenClientsWhitelist;
     private String googleClientId;
     private ResourceServerTokenServices tokenServices;
+    private UserService userService;
 
     @Autowired
     public ResourceServerConfig(
             @Value("${google.client.id}") String googleClientId,
             @Value("${token.clients.whitelist.google}") String googleTokenClientsWhitelist,
             @Value("${token.clients.whitelist.facebook}") String facebookTokenClientsWhitelist,
-            ResourceServerTokenServices tokenServices) {
+            ResourceServerTokenServices tokenServices,
+            UserService userService) {
         this.googleClientId = googleClientId;
+        this.userService = userService;
         this.tokenClientsWhitelist = String.join(",", googleTokenClientsWhitelist, facebookTokenClientsWhitelist);
         this.tokenServices = tokenServices;
     }
@@ -53,6 +57,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         WhitelistOAuth2AuthenticationManager manager = new WhitelistOAuth2AuthenticationManager();
         manager.setResourceIds(tokenClientsWhitelist.split(","));
         manager.setTokenServices(tokenServices);
+        manager.setUserService(userService);
         return manager;
     }
 
