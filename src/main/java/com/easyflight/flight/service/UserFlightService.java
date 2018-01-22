@@ -8,7 +8,6 @@ import com.easyflight.flight.enums.ErrorCodes;
 import com.easyflight.flight.exception.DuplicateException;
 import com.easyflight.flight.exception.NotFoundException;
 import com.easyflight.flight.repository.UserFlightRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
@@ -41,10 +40,14 @@ public class UserFlightService {
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
         Page<UserFlight> userFlights =  userFlightRepository.findAll(QUserFlight.userFlight.userId.eq(user.getId()), pageRequest);
         userFlights.getContent().forEach(userFlight -> {
-            Flight flight = userFlight.getFlight();
-            if( flight != null){
+            Flight flight = flightService.getFlightById(userFlight.getFlightId());
+            if (flight == null) {
+                userFlight.setExpired(true);
+
+            } else {
                 userFlight.setExpired(flight.getDepartureTime().before(new Date()));
             }
+            userFlight.setFlight(flight);
         });
         return userFlights;
     }
@@ -70,7 +73,6 @@ public class UserFlightService {
         userFlight.setTo(flight.getTo());
         userFlight.setFlightNumber(flight.getFlightNumber());
         userFlight.setUserId(user.getId());
-        userFlight.setFlight(flight);
 
         try {
             return userFlightRepository.save(userFlight);

@@ -19,6 +19,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by johnson on 6/22/17.
@@ -45,7 +47,25 @@ public class FlightService {
                 = getOneWayFlightSearchPredicate(qFlight, request);
         PageRequest pageRequest = getPageRequest(request);
 
-        return flightsRepository.findAll(flightSearchPredicate, pageRequest);
+        Page<Flight> flights = flightsRepository
+                .findAll(flightSearchPredicate, pageRequest);
+
+        //Sort Prices
+        flights.getContent()
+                .forEach(flight -> {
+                    List prices = flight.getPrices();
+                    prices.sort((a, b) -> {
+                        Double priceA = Double.valueOf(String.valueOf(((Map) a).get("cost")));
+                        Double priceB = Double.valueOf(String.valueOf(((Map) b).get("cost")));
+                        if (priceB == 0) //All 'No Sit' prices should be last
+                            return -1;
+                        if (priceA == 0)
+                            return 1;
+                        return priceA.compareTo(priceB);
+                    });
+
+                });
+        return flights;
     }
 
     public Flight getFlightById(String id) {
