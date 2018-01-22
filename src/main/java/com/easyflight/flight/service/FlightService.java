@@ -11,6 +11,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
@@ -57,9 +58,12 @@ public class FlightService {
     }
 
     private PageRequest getPageRequest(FlightRequest request) {
+        Sort.Order departureTimeOrder = new Sort.Order(Sort.Direction.ASC, "departureTime");
+        Sort.Order airlineOrder = new Sort.Order(Sort.Direction.ASC, "departureTime");
+        Sort sort = new Sort(departureTimeOrder, airlineOrder);
         return new PageRequest(
                 request.getPageNumber(),
-                request.getPageSize());
+                request.getPageSize(), sort);
     }
 
     private Predicate getOneWayFlightSearchPredicate(
