@@ -27,6 +27,7 @@ public class Flight {
     private Map routes;
     private Date expiresAt;
     private String flightNumber;
+    private Boolean userSaved = false;
 
     public Flight() {
     }
@@ -132,5 +133,13 @@ public class Flight {
 
     public void setRoutes(Map routes) {
         this.routes = routes;
+    }
+
+    public boolean isUserSaved() {
+        return userSaved;
+    }
+
+    public void setUserSaved(boolean userSaved) {
+        this.userSaved = userSaved;
     }
 }

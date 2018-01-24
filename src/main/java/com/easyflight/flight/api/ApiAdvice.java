@@ -25,7 +25,7 @@ public class ApiAdvice {
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ResponseBody
     public Response handleNotFoundException(NotFoundException e) {
-        logger.error(e.getMessage());
+        logger.error(e.getMessage(), e);
         Response response = new Response(e.getCode(), e.getMessage());
         return response;
     }
@@ -34,7 +34,7 @@ public class ApiAdvice {
     @ResponseStatus(value = HttpStatus.CONFLICT)
     @ResponseBody
     public Response handleDuplicateException(DuplicateException e) {
-        logger.error(e.getMessage());
+        logger.error(e.getMessage(), e);
         Response response = new Response(e.getCode(), e.getMessage());
         return response;
     }
@@ -43,7 +43,7 @@ public class ApiAdvice {
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public Response handleException(Exception e) {
-        logger.error(e.getMessage());
+        logger.error(e.getMessage(), e);
         Response response = new Response(ErrorCodes.INTERNAL_SERVER_ERROR.name(), e.getMessage());
         return response;
     }

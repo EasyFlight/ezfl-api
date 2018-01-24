@@ -11,4 +11,6 @@ import java.util.List;
  */
 public interface UserFlightRepository extends MongoRepository<UserFlight, String>, QueryDslPredicateExecutor<UserFlight> {
     List<UserFlight> findByIdAndUserId(String id, String userId);
+
+    List<UserFlight> findByFlightIdAndUserId(String flightId, String userId);
 }

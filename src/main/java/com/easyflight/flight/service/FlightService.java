@@ -3,8 +3,11 @@ package com.easyflight.flight.service;
 import com.easyflight.flight.entity.Flight;
 import com.easyflight.flight.entity.QFlight;
 import com.easyflight.flight.entity.RoutePredicate;
+import com.easyflight.flight.entity.UserFlight;
 import com.easyflight.flight.entity.query.TimeSpan;
+import com.easyflight.flight.oauth2.UserInfoPrincipal;
 import com.easyflight.flight.repository.FlightsRepository;
+import com.easyflight.flight.repository.UserFlightRepository;
 import com.easyflight.flight.request.FlightRequest;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -12,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
@@ -29,14 +34,17 @@ import java.util.Map;
 public class FlightService {
 
     private FlightsRepository flightsRepository;
+    private UserFlightRepository userFlightRepository;
+
     private DateFormat dateFormat
             = new SimpleDateFormat("dd/MM/yyyy");
     private DateFormat timeFormat
             = new SimpleDateFormat("HH:mm");
 
     @Autowired
-    public FlightService(FlightsRepository flightsRepository) {
+    public FlightService(FlightsRepository flightsRepository, UserFlightRepository userFlightRepository) {
         this.flightsRepository = flightsRepository;
+        this.userFlightRepository = userFlightRepository;
     }
 
     public Page<Flight> getOneWayFlights(FlightRequest request)
@@ -49,6 +57,8 @@ public class FlightService {
 
         Page<Flight> flights = flightsRepository
                 .findAll(flightSearchPredicate, pageRequest);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         //Sort Prices
         flights.getContent()
@@ -63,6 +73,15 @@ public class FlightService {
                             return 1;
                         return priceA.compareTo(priceB);
                     });
+                    //See if user saved flight
+                    if (authentication != null && authentication.getPrincipal() instanceof UserInfoPrincipal) {
+                        UserInfoPrincipal principal = (UserInfoPrincipal) authentication.getPrincipal();
+                        List<UserFlight> userFlights = userFlightRepository.findByFlightIdAndUserId(flight.getId(), principal.getId());
+                        if (userFlights.size() > 0) {
+                            flight.setUserSaved(true);
+                        }
+
+                    }
 
                 });
         return flights;

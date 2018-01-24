@@ -106,8 +106,9 @@ public class WhitelistOAuth2AuthenticationManager extends OAuth2AuthenticationMa
                 UserRequest request = new UserRequest();
                 BeanUtils.copyProperties(principal, request);
                 request.setFullName(principal.getName());
-                userService.createUser(request);
+                user = userService.createUser(request);
             }
+            principal.setId(user.getId());
         }
         return auth;
 
