@@ -45,6 +45,12 @@ public class PopularDestinationService {
 
     @Scheduled(fixedDelayString = "${flights.job.scheduleInterval}")
     public void popularDestinationsJob() {
+        popularDestinationRepository
+                .findAll()
+                .forEach(p -> {
+                    popularDestinationRepository.delete(p);
+                });
+
         String[] destinations = popularDestinations.split(",");
         Arrays
                 .stream(destinations)
